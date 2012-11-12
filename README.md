@@ -5,16 +5,17 @@ A quick and simple RESTful API to BIND, written in Ruby / Sinatra. Provides the 
 I wrote this as a solution to enable our internal Cloud to add/remove machines to DNS by integrating with the DNS architecture that we have today.
 
 ## Instructions
+    $ ruby dns.rb
     # cd etc/
     # named -c named.conf
 
 ### Add a record to DNS:
 
-    # curl -X POST -H 'Content-Type: application/json' -H 'X-Api-Key: secret' -d '{ "fqdn": "host12.apple.com", "ip": "1.1.1.12" }' http://localhost:4567/dns
+    $ curl -X POST -H 'Content-Type: application/json' -H 'X-Api-Key: secret' -d '{ "fqdn": "host12.apple.com", "ip": "1.1.1.12" }' http://localhost:4567/dns
 
 ### Remove a record from DNS:
 
-    # curl -X DELETE -H 'Content-Type: application/json' -H 'X-Api-Key: secret' -d '{ "fqdn": "host12.apple.com", "ip": "1.1.1.12" }' http://localhost:4567/dns
+    $ curl -X DELETE -H 'Content-Type: application/json' -H 'X-Api-Key: secret' -d '{ "fqdn": "host12.apple.com", "ip": "1.1.1.12" }' http://localhost:4567/dns
 
 ## API
 The API supports POST and DELETE methods to add and remove entries, respectively. On a successful POST a 201 is returned. On a successful DELETE a 200 is returned. Duplicate records are never created.
