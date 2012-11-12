@@ -31,3 +31,6 @@ The TTL and other DNS params are hard-coded inside of <code>dns.rb</code>
 
 ## Security
 The API is protected by way of an API-Key using a custom <code>X-Api-Key</code> HTTP header. The API should also be served over a secure connection. 
+
+## etc
+Example named configuration files are included to help get started with integrating <code>dns.rb</code> with BIND.
