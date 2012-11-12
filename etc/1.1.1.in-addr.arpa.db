@@ -1,0 +1,10 @@
+$ORIGIN .
+$TTL 38400	; 10 hours 40 minutes
+1.1.1.in-addr.arpa	IN SOA	ns1.apple.com. hostmaster.apple.com. (
+				2012110933 ; serial
+				28800      ; refresh (8 hours)
+				3600       ; retry (1 hour)
+				604800     ; expire (1 week)
+				38400      ; minimum (10 hours 40 minutes)
+				)
+			NS	ns1.apple.com.
