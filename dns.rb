@@ -5,8 +5,8 @@ require 'sinatra'
 require 'json'
 require 'ipaddr'
 
-# curl -X POST -H 'Content-Type: application/json' -H 'X-Api-Key: secret' -d '{ "fqdn": "host12.apple.com", "ip": "1.1.1.12" }' http://localhost:4567/dns
-# curl -X DELETE -H 'Content-Type: application/json' -H 'X-Api-Key: secret' -d '{ "fqdn": "host12.apple.com", "ip": "1.1.1.12" }' http://localhost:4567/dns
+# curl -X POST -H 'Content-Type: application/json' -H 'X-Api-Key: secret' -d '{ "hostname": "host12.apple.com", "ip": "1.1.1.12" }' http://localhost:4567/dns
+# curl -X DELETE -H 'Content-Type: application/json' -H 'X-Api-Key: secret' -d '{ "hostname": "host12.apple.com", "ip": "1.1.1.12" }' http://localhost:4567/dns
 
 dns_params = {
   :server => '127.0.0.1',
@@ -35,9 +35,9 @@ post '/dns' do
   IO.popen("nsupdate -y #{dns_params[:rndc_key]}:#{dns_params[:rndc_secret]} -v", 'r+') do |f|
     f << <<-EOF
       server #{dns_params[:server]}
-      update add #{request_params["fqdn"]} #{dns_params[:ttl]} A #{request_params["ip"]}
+      update add #{request_params["hostname"]} #{dns_params[:ttl]} A #{request_params["ip"]}
       send
-      update add #{reverse_zone} #{dns_params[:ttl]} PTR #{request_params["fqdn"]}
+      update add #{reverse_zone} #{dns_params[:ttl]} PTR #{request_params["hostname"]}
       send
     EOF
     f.close_write
@@ -54,7 +54,7 @@ delete '/dns' do
   IO.popen("nsupdate -y #{dns_params[:rndc_key]}:#{dns_params[:rndc_secret]} -v", 'r+') do |f|
     f << <<-EOF
       server #{dns_params[:server]}
-      update delete #{request_params["fqdn"]} A
+      update delete #{request_params["hostname"]} A
       send
       update delete #{reverse_zone} PTR
       send
