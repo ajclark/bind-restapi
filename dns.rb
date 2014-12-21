@@ -28,16 +28,17 @@ before do
 end
 
 post '/dns' do
-  request_params = JSON.parse(request.body.read)    
+  request_params = JSON.parse(request.body.read)
   reverse_zone = reverse_ip(request_params["ip"])
-  
+  ttl = if request_params["ttl"].nil? then dns_params[:ttl] else request_params["ttl"] end
+
   # Add record to forward and reverse zones, via TCP
   IO.popen("nsupdate -y #{dns_params[:rndc_key]}:#{dns_params[:rndc_secret]} -v", 'r+') do |f|
     f << <<-EOF
       server #{dns_params[:server]}
-      update add #{request_params["hostname"]} #{dns_params[:ttl]} A #{request_params["ip"]}
+      update add #{request_params["hostname"]} #{ttl} A #{request_params["ip"]}
       send
-      update add #{reverse_zone} #{dns_params[:ttl]} PTR #{request_params["hostname"]}
+      update add #{reverse_zone} #{ttl} PTR #{request_params["hostname"]}
       send
     EOF
     f.close_write
@@ -49,7 +50,7 @@ end
 delete '/dns' do
   request_params = JSON.parse(request.body.read)
   reverse_zone = reverse_ip(request_params["ip"])
-  
+
   # Remove record from forward and reverse zones, via TCP
   IO.popen("nsupdate -y #{dns_params[:rndc_key]}:#{dns_params[:rndc_secret]} -v", 'r+') do |f|
     f << <<-EOF
